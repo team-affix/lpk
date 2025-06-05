@@ -1,28 +1,61 @@
 #!/usr/bin/env node
 
-// Example of ESM style TypeScript file
+import { Command } from 'commander';
 import { greeting, spawnCommand } from './utils.js';
 
-// Note: In ESM with NodeNext resolution, we must use the .js extension in imports
-// even though we're writing .ts files. This is required by Node's ESM implementation.
-// TypeScript will correctly resolve this to the .ts file during compilation.
+// Set version manually (can be updated during build)
+const VERSION = '1.0.0';
 
-console.log(greeting('world2'));
-
-export async function main(): Promise<void> {
-  console.log('LPK - Logic Package Manager');
-  
-  // Example of running a git clone command using spawn
-  try {
-    // Break the command into the executable and arguments
-    await spawnCommand('git', ['clone', 'https://github.com/team-affix/armory.git']);
-    console.log('Git clone completed successfully');
-  } catch (error) {
-    console.error('Failed to execute git clone:', error);
-  }
+// Define types for our commands
+interface CloneOptions {
+  directory?: string;
 }
 
-// Execute main function if this module is run directly
-if (import.meta.url === import.meta.resolve('./index.js')) {
-  main().catch(error => console.error('Error in main:', error));
+// Create a new commander program
+const program = new Command();
+
+// Configure the program with version, description, etc.
+program
+  .name('lpk')
+  .description('Logic Package Manager - A tool for managing logic packages')
+  .version(VERSION);
+
+// Add a clone command
+program
+  .command('clone')
+  .description('Clone a repository')
+  .argument('<url>', 'Repository URL to clone')
+  .option('-d, --directory <directory>', 'Directory to clone into')
+  .action(async (url: string, options: CloneOptions) => {
+    console.log(`Cloning repository: ${url}`);
+    
+    try {
+      const args: string[] = ['clone', url];
+      if (options.directory) {
+        args.push(options.directory);
+      }
+      
+      await spawnCommand('git', args);
+      console.log('Repository cloned successfully');
+    } catch (error) {
+      console.error('Failed to clone repository:', error);
+      process.exit(1);
+    }
+  });
+
+// Add a hello command
+program
+  .command('hello')
+  .description('Say hello to someone')
+  .argument('[name]', 'Name to greet', 'world')
+  .action((name: string) => {
+    console.log(greeting(name));
+  });
+
+// Parse command line arguments
+program.parse();
+
+// If no command is provided, show help
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
 }
