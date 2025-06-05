@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/team-affix/lpk#readme",
   "devDependencies": {
+    "@types/node": "^22.15.30",
     "typescript": "^5.8.3"
   }
 }
