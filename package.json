@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "deploy": "npm run build && sudo npm install -g ."
   },
   "repository": {
     "type": "git",
