@@ -4,6 +4,9 @@
   "description": "Logic package manager.",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "lpk": "./dist/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"

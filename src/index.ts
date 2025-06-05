@@ -1,5 +1,7 @@
+#!/usr/bin/env node
+
 // Example of ESM style TypeScript file
-import { greeting, executeCommand, spawnCommand } from './utils.js';
+import { greeting, spawnCommand } from './utils.js';
 
 // Note: In ESM with NodeNext resolution, we must use the .js extension in imports
 // even though we're writing .ts files. This is required by Node's ESM implementation.
