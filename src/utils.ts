@@ -8,26 +8,7 @@ export function greeting(name: string): string {
 }
 
 // Import Node.js child_process module for executing shell commands
-import { exec, spawn } from 'child_process';
-import { promisify } from 'util';
-
-// Convert exec callback to promise-based function
-const execPromise = promisify(exec);
-
-/**
- * Executes a shell command and returns the output
- * @param command - The shell command to execute
- * @returns Promise with stdout and stderr
- */
-export async function executeCommand(command: string): Promise<{stdout: string, stderr: string}> {
-  try {
-    const { stdout, stderr } = await execPromise(command);
-    return { stdout, stderr };
-  } catch (error) {
-    console.error(`Error executing command: ${error}`);
-    return { stdout: '', stderr: error instanceof Error ? error.message : String(error) };
-  }
-}
+import { spawn } from 'child_process';
 
 /**
  * Executes a shell command using spawn for better handling of interactive commands
@@ -65,6 +46,5 @@ export function spawnCommand(command: string, args: string[] = []): Promise<void
 // or default exports like below:
 export default {
   greeting,
-  executeCommand,
   spawnCommand
 }; 
