@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { greeting, spawnCommand } from './utils.js';
+import { greeting, spawnCommand, copyFilesWithExtension } from './utils.js';
+import * as path from 'path';
 
 // Set version manually (can be updated during build)
 const VERSION = '1.0.0';
@@ -15,6 +16,12 @@ interface CloneOptions {
 interface BuildOptions {
   file?: string[];
   verbose?: boolean;
+}
+
+// Define types for the extract command options
+interface ExtractOptions {
+  output?: string;
+  extension?: string;
 }
 
 // Create a new commander program
@@ -94,6 +101,39 @@ program
     
     if (options.verbose) {
       console.log('Verbose mode enabled');
+    }
+  });
+
+// Add a command to extract only .agda files from a directory
+program
+  .command('extract-agda')
+  .description('Extract only .agda files from a directory')
+  .argument('<sourceDir>', 'Source directory path')
+  .option('-o, --output <directory>', 'Output directory (default: ./agda-files)')
+  .option('-e, --extension <ext>', 'File extension to extract (default: .agda)')
+  .action((sourceDir: string, options: ExtractOptions) => {
+    try {
+      // Resolve the source directory path
+      const sourcePath = path.resolve(sourceDir);
+      
+      // Default output directory is ./agda-files if not specified
+      const outputDir = options.output 
+        ? path.resolve(options.output) 
+        : path.resolve('./agda-files');
+      
+      // Default extension is .agda if not specified
+      const extension = options.extension || '.agda';
+      
+      console.log(`Extracting ${extension} files from: ${sourcePath}`);
+      console.log(`Output directory: ${outputDir}`);
+      
+      // Copy the files
+      const copiedFiles = copyFilesWithExtension(sourcePath, outputDir, extension);
+      
+      console.log(`\nExtraction complete. Copied ${copiedFiles.length} files.`);
+    } catch (error) {
+      console.error('Error extracting files:', error);
+      process.exit(1);
     }
   });
 
