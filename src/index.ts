@@ -20,7 +20,7 @@ program
 program
   .command('install')
   .description('Installs logic packages from dependencies file')
-  .action(async (options: {} = {}) => {
+  .action(async () => {
     console.log(`Installing packages from dependencies file`);
   });
 
